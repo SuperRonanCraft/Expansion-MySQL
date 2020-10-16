@@ -19,12 +19,12 @@ public class Main extends PlaceholderExpansion {
 	Connection connection = null;
 	Statement statement = null;
 	List<String> identifiers;
-	HashMap<String, String> host = new HashMap<String, String>();
-	HashMap<String, String> database = new HashMap<String, String>();
-	HashMap<String, String> username = new HashMap<String, String>();
-	HashMap<String, String> password = new HashMap<String, String>();
-	HashMap<String, String> query = new HashMap<String, String>();
-	HashMap<String, Integer> port = new HashMap<String, Integer>();
+	HashMap<String, String> host = new HashMap<>();
+	HashMap<String, String> database = new HashMap<>();
+	HashMap<String, String> username = new HashMap<>();
+	HashMap<String, String> password = new HashMap<>();
+	HashMap<String, String> query = new HashMap<>();
+	HashMap<String, Integer> port = new HashMap<>();
 
 	@Override
 	public boolean register() {
@@ -40,7 +40,7 @@ public class Main extends PlaceholderExpansion {
 			query.put(id, sec.getString("query"));
 			port.put(id, sec.getInt("port"));
 		}
-		Bukkit.broadcastMessage(host.size() + "");
+		System.out.println("Expansion MySQL REGISTERED!");
 		return super.register();
 	}
 
@@ -49,8 +49,8 @@ public class Main extends PlaceholderExpansion {
 		if (identifiers.contains(id)) {
 			try {
 				openConnection(id);
-				ResultSet result = statement.executeQuery(query.get(id).replaceAll("{uuid}", p.getUniqueId().toString())
-						.replaceAll("{player}", p.getDisplayName()));
+				ResultSet result = statement.executeQuery(query.get(id).replaceAll("\\{uuid}", p.getUniqueId().toString())
+						.replaceAll("\\{player}", p.getDisplayName()));
 				if (result.next())
 					return result.toString();
 			} catch (SQLException | ClassNotFoundException e) {
@@ -75,16 +75,14 @@ public class Main extends PlaceholderExpansion {
 	 * "SELECT TotalVotes FROM ProVotes WHERE UUID = {uuid}"); return map; }
 	 */
 
-	private boolean openConnection(String id) throws SQLException, ClassNotFoundException {
+	private void openConnection(String id) throws SQLException, ClassNotFoundException {
 		if (connection == null || connection.isClosed())
 			synchronized (this) {
 				Class.forName("com.mysql.jdbc.Driver");
 				connection = DriverManager.getConnection(
 						"jdbc:mysql://" + host.get(id) + ":" + port.get(id) + "/" + database.get(id), username.get(id),
 						password.get(id));
-				return true;
 			}
-		return false;
 	}
 
 	@Override
@@ -95,11 +93,6 @@ public class Main extends PlaceholderExpansion {
 	@Override
 	public String getIdentifier() {
 		return "MySQL";
-	}
-
-	@Override
-	public String getPlugin() {
-		return null;
 	}
 
 	@Override

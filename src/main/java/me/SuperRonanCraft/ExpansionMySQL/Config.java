@@ -11,9 +11,9 @@ import me.clip.placeholderapi.PlaceholderAPIPlugin;
 
 public class Config {
 
-	private Main ex;
+	private final Main ex;
 
-	private PlaceholderAPIPlugin plugin;
+	private final PlaceholderAPIPlugin plugin;
 
 	private FileConfiguration config;
 
